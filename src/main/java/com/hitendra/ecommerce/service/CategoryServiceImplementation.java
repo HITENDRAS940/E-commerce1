@@ -5,7 +5,7 @@ import com.hitendra.ecommerce.exceptions.ResourceNotFoundException;
 import com.hitendra.ecommerce.model.Category;
 import com.hitendra.ecommerce.payload.CategoryDTO;
 import com.hitendra.ecommerce.payload.CategoryResponse;
-import com.hitendra.ecommerce.repo.CategoryRepo;
+import com.hitendra.ecommerce.repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,12 +18,12 @@ import java.util.List;
 @Service
 public class CategoryServiceImplementation implements CategoryService{
 
-    private final CategoryRepo categoryRepo;
+    private final CategoryRepository categoryRepository;
 
     private final ModelMapper modelMapper;
 
-    public CategoryServiceImplementation(CategoryRepo categoryRepo, ModelMapper modelMapper) {
-        this.categoryRepo = categoryRepo;
+    public CategoryServiceImplementation(CategoryRepository categoryRepository, ModelMapper modelMapper) {
+        this.categoryRepository = categoryRepository;
         this.modelMapper = modelMapper;
     }
 
@@ -35,7 +35,7 @@ public class CategoryServiceImplementation implements CategoryService{
                 : Sort.by(sortBy).descending();
 
         Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-        Page<Category> categoryPage = categoryRepo.findAll(pageDetails);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
 
         List<Category> categories =  categoryPage.getContent();
         if(categories.isEmpty())
@@ -58,7 +58,7 @@ public class CategoryServiceImplementation implements CategoryService{
     @Override
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         Category category = modelMapper.map(categoryDTO, Category.class);
-        Category existingCategory = categoryRepo
+        Category existingCategory = categoryRepository
                 .findCategoryByCategoryName(
                         categoryDTO.getCategoryName()
                 );
@@ -68,7 +68,7 @@ public class CategoryServiceImplementation implements CategoryService{
                     "Category with name " + categoryDTO.getCategoryName() + " already exists"
             );
 
-        Category savedCategory = categoryRepo.save(category);
+        Category savedCategory = categoryRepository.save(category);
         return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 
@@ -77,12 +77,12 @@ public class CategoryServiceImplementation implements CategoryService{
     public CategoryDTO deleteCategory(
             Long categoryID
     ) {
-        Category category = categoryRepo
+        Category category = categoryRepository
                 .findById(categoryID)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Category", "categoryID", categoryID)
                 );
-        categoryRepo
+        categoryRepository
                 .deleteById(categoryID);
         return modelMapper.map(category, CategoryDTO.class);
 
@@ -94,13 +94,13 @@ public class CategoryServiceImplementation implements CategoryService{
             Long categoryID
     ) {
         Category category = modelMapper.map(categoryDTO, Category.class);
-        categoryRepo
+        categoryRepository
                 .findById(categoryID)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("category", "categoryID", categoryID)
                 );
 
-        Category sameNameCategory = categoryRepo
+        Category sameNameCategory = categoryRepository
                 .findCategoryByCategoryName(categoryDTO.getCategoryName());
 
         if(sameNameCategory!=null) {
@@ -109,7 +109,7 @@ public class CategoryServiceImplementation implements CategoryService{
 
         category.setCategoryId(categoryID);
 
-        Category savedCategory =  categoryRepo.save(category);
+        Category savedCategory =  categoryRepository.save(category);
         return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 }

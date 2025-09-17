@@ -1,12 +1,10 @@
-package com.hitendra.ecommerce.repo;
+package com.hitendra.ecommerce.repository;
 
 import com.hitendra.ecommerce.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 @Repository
-public interface CategoryRepo extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long> {
     Category findCategoryByCategoryName(String categoryName);
 }
