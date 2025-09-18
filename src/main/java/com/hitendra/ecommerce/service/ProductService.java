@@ -3,9 +3,6 @@ package com.hitendra.ecommerce.service;
 import com.hitendra.ecommerce.model.Product;
 import com.hitendra.ecommerce.payload.ProductDTO;
 import com.hitendra.ecommerce.payload.ProductResponse;
-import com.hitendra.ecommerce.repository.ProductRepository;
-
-import java.util.List;
 
 public interface ProductService {
 
