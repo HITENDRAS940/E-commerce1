@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -87,6 +85,37 @@ public class ProductController {
         return new ResponseEntity<>(
                 productService.getProductsByCategories(categoryId, pageNumber, pageSize, sortBy, sortOrder),
                 HttpStatus.FOUND
+        );
+    }
+
+    @GetMapping("public/products/keyword/{keyword}")
+    public ResponseEntity<ProductResponse> getProductsByKeyword(
+            @PathVariable("keyword") String keyword,
+            @RequestParam(
+                    name = "pageNumber",
+                    defaultValue = AppConstants.PAGE_NUMBER,
+                    required = false
+            ) Integer pageNumber,
+            @RequestParam(
+                    name = "pageSize",
+                    defaultValue = AppConstants.PAGE_SIZE,
+                    required = false
+            ) Integer pageSize,
+            @RequestParam(
+                    name = "sortBy",
+                    defaultValue = AppConstants.SORT_PRODUCTS_BY,
+                    required = false
+            ) String sortBy,
+            @RequestParam(
+                    name = "sortOrder",
+                    defaultValue = AppConstants.SORT_DIRECTION,
+                    required = false
+            ) String sortOrder
+
+    ) {
+        return new ResponseEntity<>(
+                productService.getProductsByKeyword(keyword, pageNumber, pageSize, sortBy, sortOrder),
+                HttpStatus.OK
         );
     }
 }

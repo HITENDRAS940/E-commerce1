@@ -9,17 +9,15 @@ import com.hitendra.ecommerce.payload.ProductDTO;
 import com.hitendra.ecommerce.payload.ProductResponse;
 import com.hitendra.ecommerce.repository.CategoryRepository;
 import com.hitendra.ecommerce.repository.ProductRepository;
+import com.hitendra.ecommerce.utils.BuildProductResponse;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImplementation implements ProductService{
@@ -75,14 +73,9 @@ public class ProductServiceImplementation implements ProductService{
                 .map(product ->  modelMapper.map(product, ProductDTO.class))
                 .toList();
 
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setContent(productDTOS);
-        productResponse.setPageNumber(productPage.getNumber());
-        productResponse.setPageSize(productPage.getSize());
-        productResponse.setTotalElements(productPage.getTotalElements());
-        productResponse.setTotalPages(productPage.getTotalPages());
-        productResponse.setLastPage(productPage.isLast());
-        return productResponse;
+        BuildProductResponse buildProductResponse = new BuildProductResponse();
+
+        return buildProductResponse.build(productPage, productDTOS);
     }
 
     @Override
@@ -109,13 +102,33 @@ public class ProductServiceImplementation implements ProductService{
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .toList();
 
-        ProductResponse productResponse = new ProductResponse();
-        productResponse.setContent(productDTOS);
-        productResponse.setPageNumber(productPage.getNumber());
-        productResponse.setPageSize(productPage.getSize());
-        productResponse.setTotalElements(productPage.getTotalElements());
-        productResponse.setTotalPages(productPage.getTotalPages());
-        productResponse.setLastPage(productPage.isLast());
-        return  productResponse;
+        BuildProductResponse buildProductResponse = new BuildProductResponse();
+
+        return buildProductResponse.build(productPage, productDTOS);
+    }
+
+    @Override
+    public ProductResponse getProductsByKeyword(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+
+        Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+        Page<Product> productPage = productRepository.getProductsByProductNameLikeIgnoreCase( "%" + keyword + "%", pageDetails);
+
+        List<Product> products = productPage.getContent();
+
+        if(products.isEmpty()) {
+            throw new ResourceNotFoundException("Products", "keyword", keyword);
+        }
+
+        List<ProductDTO> productDTOS = products.stream()
+                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .toList();
+
+        BuildProductResponse buildProductResponse = new BuildProductResponse();
+
+        return buildProductResponse.build(productPage, productDTOS);
     }
 }
