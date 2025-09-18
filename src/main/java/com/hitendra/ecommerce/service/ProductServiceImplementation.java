@@ -16,8 +16,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductServiceImplementation implements ProductService{
@@ -25,18 +31,33 @@ public class ProductServiceImplementation implements ProductService{
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
+    private final FileService fileService;
 
-    public ProductServiceImplementation(CategoryRepository categoryRepository, ProductRepository productRepository, ModelMapper modelMapper) {
+    public ProductServiceImplementation(CategoryRepository categoryRepository, ProductRepository productRepository, ModelMapper modelMapper, FileService fileService) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
+        this.fileService = fileService;
     }
 
     @Override
-    public ProductDTO addProduct(Product product, Long categoryId) {
+    public ProductDTO addProduct(ProductDTO productDTO, Long categoryId) {
+
         Category category = categoryRepository
                 .findById(categoryId)
                 .orElseThrow(()->new ResourceNotFoundException("Category", "categoryId", categoryId));
+
+        boolean isProductNotPresent = true;
+
+        List<Product> products = category.getProducts();
+
+        for (Product value : products) {
+            if (value.getProductName().equals(productDTO.getProductName())) {
+                throw new APIException("Product -> " + productDTO.getProductName() + " already present in category -> "+ category.getCategoryName());
+            }
+        }
+
+        Product product = modelMapper.map(productDTO, Product.class);
 
         product.setImage("default.png");
 
@@ -131,4 +152,50 @@ public class ProductServiceImplementation implements ProductService{
 
         return buildProductResponse.build(productPage, productDTOS);
     }
+
+    @Override
+    public ProductDTO updateProduct(Long productId, ProductDTO productDTO) {
+        Product productFromDB = productRepository
+                .findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        productFromDB.setProductName(productDTO.getProductName());
+        productFromDB.setDescription(productDTO.getDescription());
+        productFromDB.setQuantity(productDTO.getQuantity());
+        productFromDB.setPrice(productDTO.getPrice());
+        productFromDB.setDiscount(productDTO.getDiscount());
+
+        double newSpecialPrice = productFromDB.getPrice() - (productFromDB.getPrice()* productFromDB.getDiscount())/100;
+        productFromDB.setSpecialPrice(newSpecialPrice);
+
+        Product savedProduct = productRepository.save(productFromDB);
+
+        return modelMapper.map(savedProduct, ProductDTO.class);
+    }
+
+    @Override
+    public ProductDTO deleteProduct(Long productId) {
+        Product productFromDb = productRepository
+                .findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        productRepository.delete(productFromDb);
+        return modelMapper.map(productFromDb, ProductDTO.class);
+    }
+
+    @Override
+    public ProductDTO updateImage(Long productId, MultipartFile image) throws IOException {
+        Product productFromDb = productRepository
+                .findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
+        String path = "images/";
+        String fileName = fileService.uploadImage(path, image);
+
+        productFromDb.setImage(fileName);
+
+        Product updatedProduct = productRepository.save(productFromDb);
+        return modelMapper.map(updatedProduct, ProductDTO.class);
+    }
+
 }
