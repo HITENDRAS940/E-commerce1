@@ -8,7 +8,10 @@ import com.hitendra.ecommerce.repository.ProductRepository;
 import java.util.List;
 
 public interface ProductService {
+
     ProductDTO addProduct(Product product, Long categoryId);
 
-    ProductResponse getAllProducts(Integer pageNumber, Integer pageSize);
+    ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+
+    ProductResponse getProductsByCategories(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 }
