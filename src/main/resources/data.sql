@@ -102,7 +102,7 @@ INSERT INTO category (category_name) VALUES
   ('Gift Items'),
   ('Subscription Boxes');
 
-INSERT INTO product (product_name, description, price, discount, special_price, quantity, category_id, image)
+INSERT INTO products (product_name, description, price, discount, special_price, quantity, category_id, image)
 VALUES
 ('Macbook M2 Pro', 'Macbook with M2 chip', 1099.99, 10, 989.99, 500, 2, 'macbook.png'),
 ('iPhone 15 Pro', 'Latest Apple iPhone', 999.99, 5, 949.99, 1000, 3, 'iphone.png'),
