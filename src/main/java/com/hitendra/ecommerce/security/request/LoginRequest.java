@@ -1,6 +1,7 @@
-package com.hitendra.ecommerce.payload;
+package com.hitendra.ecommerce.security.request;
 
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginRequest {
 
+    @NotBlank
     private String username;
+
+    @NotBlank
     private String password;
 
 }
