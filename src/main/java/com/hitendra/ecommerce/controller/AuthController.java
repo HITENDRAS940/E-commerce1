@@ -6,7 +6,7 @@ import com.hitendra.ecommerce.model.Users;
 import com.hitendra.ecommerce.repository.RoleRepository;
 import com.hitendra.ecommerce.security.request.LoginRequest;
 import com.hitendra.ecommerce.security.response.MessageResponse;
-import com.hitendra.ecommerce.security.response.SignUpRequest;
+import com.hitendra.ecommerce.security.request.SignUpRequest;
 import com.hitendra.ecommerce.security.response.UserInfoResponse;
 import com.hitendra.ecommerce.repository.UserRepository;
 import com.hitendra.ecommerce.security.jwt.JwtUtils;
@@ -20,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 

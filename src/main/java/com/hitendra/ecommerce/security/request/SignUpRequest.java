@@ -1,4 +1,4 @@
-package com.hitendra.ecommerce.security.response;
+package com.hitendra.ecommerce.security.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

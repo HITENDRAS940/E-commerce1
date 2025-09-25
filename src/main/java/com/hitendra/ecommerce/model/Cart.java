@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +24,9 @@ public class Cart {
 
     @OneToMany(
             mappedBy = "cart",
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE,
-                    CascadeType.REMOVE
-            },
-            orphanRemoval = true)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<CartItem> cartItems = new ArrayList<>();
 
     private Double totalPrice = 0.0;
