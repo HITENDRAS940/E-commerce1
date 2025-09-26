@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.catalina.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
-    private Users user;
+    private User user;
 
     @OneToMany(
             mappedBy = "product",

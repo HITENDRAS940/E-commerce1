@@ -2,7 +2,7 @@ package com.hitendra.ecommerce.controller;
 
 import com.hitendra.ecommerce.model.AppRole;
 import com.hitendra.ecommerce.model.Role;
-import com.hitendra.ecommerce.model.Users;
+import com.hitendra.ecommerce.model.User;
 import com.hitendra.ecommerce.repository.RoleRepository;
 import com.hitendra.ecommerce.security.request.LoginRequest;
 import com.hitendra.ecommerce.security.response.MessageResponse;
@@ -94,7 +94,7 @@ public class AuthController {
             );
         }
 
-        Users user = new Users(
+        User user = new User(
                 signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 passwordEncoder.encode(signUpRequest.getPassword())

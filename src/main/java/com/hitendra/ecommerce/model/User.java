@@ -21,7 +21,7 @@ import java.util.Set;
                 @UniqueConstraint(columnNames = "email")
         }
 )
-public class Users {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -43,7 +43,7 @@ public class Users {
     @Column(name = "password")
     private String password;
 
-    public Users(String username, String email, String password) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -65,11 +65,10 @@ public class Users {
 
     @Setter
     @Getter
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "user_address",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "address_id")
+    @OneToMany(
+            mappedBy = "user",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true
     )
     private List<Address> addresses = new ArrayList<>();
 

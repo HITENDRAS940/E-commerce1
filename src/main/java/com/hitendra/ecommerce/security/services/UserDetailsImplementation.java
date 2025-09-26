@@ -1,15 +1,12 @@
 package com.hitendra.ecommerce.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hitendra.ecommerce.model.Users;
+import com.hitendra.ecommerce.model.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,17 +35,17 @@ public class UserDetailsImplementation implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserDetailsImplementation build(Users users) {
+    public static UserDetailsImplementation build(User user) {
 
-        List<GrantedAuthority> authorities = users.getRoles().stream()
+        List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role->new SimpleGrantedAuthority(role.getRoleName().name()))
                 .collect(Collectors.toList());
 
         return new UserDetailsImplementation(
-                users.getUserId(),
-                users.getUsername(),
-                users.getEmail(),
-                users.getPassword(),
+                user.getUserId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getPassword(),
                 authorities
         );
 

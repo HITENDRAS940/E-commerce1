@@ -1,6 +1,6 @@
 package com.hitendra.ecommerce.security.services;
 
-import com.hitendra.ecommerce.model.Users;
+import com.hitendra.ecommerce.model.User;
 import com.hitendra.ecommerce.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Users user = userRepository.findUsersByUsername(username)
+        User user = userRepository.findUsersByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         return UserDetailsImplementation.build(user);

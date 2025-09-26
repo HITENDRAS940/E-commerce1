@@ -2,7 +2,7 @@ package com.hitendra.ecommerce.security;
 
 import com.hitendra.ecommerce.model.AppRole;
 import com.hitendra.ecommerce.model.Role;
-import com.hitendra.ecommerce.model.Users;
+import com.hitendra.ecommerce.model.User;
 import com.hitendra.ecommerce.repository.RoleRepository;
 import com.hitendra.ecommerce.repository.UserRepository;
 import com.hitendra.ecommerce.security.jwt.AuthEntryPointJwt;
@@ -122,17 +122,17 @@ public class WebSecurityConfig {
 
             // Create users if not already present
             if (!userRepository.existsUsersByUsername("user1")) {
-                Users user1 = new Users("user1", "user1@example.com", passwordEncoder.encode("password1"));
+                User user1 = new User("user1", "user1@example.com", passwordEncoder.encode("password1"));
                 userRepository.save(user1);
             }
 
             if (!userRepository.existsUsersByUsername("seller1")) {
-                Users seller1 = new Users("seller1", "seller1@example.com", passwordEncoder.encode("password2"));
+                User seller1 = new User("seller1", "seller1@example.com", passwordEncoder.encode("password2"));
                 userRepository.save(seller1);
             }
 
             if (!userRepository.existsUsersByUsername("admin")) {
-                Users admin = new Users("admin", "admin@example.com", passwordEncoder.encode("adminPass"));
+                User admin = new User("admin", "admin@example.com", passwordEncoder.encode("adminPass"));
                 userRepository.save(admin);
             }
 

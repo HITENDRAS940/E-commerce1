@@ -1,14 +1,11 @@
 package com.hitendra.ecommerce.utils;
 
-import com.hitendra.ecommerce.model.Users;
+import com.hitendra.ecommerce.model.User;
 import com.hitendra.ecommerce.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class AuthUtil {
@@ -22,14 +19,14 @@ public class AuthUtil {
 
     public String loggedInEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Users user = userRepository
+        User user = userRepository
                 .findUsersByUsername(authentication.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found."));
 
         return user.getEmail();
     }
 
-    public Users loggedInUser() {
+    public User loggedInUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         return userRepository
