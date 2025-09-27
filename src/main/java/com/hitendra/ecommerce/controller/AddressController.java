@@ -1,7 +1,9 @@
 package com.hitendra.ecommerce.controller;
 
+import com.hitendra.ecommerce.model.User;
 import com.hitendra.ecommerce.payload.AddressDTO;
 import com.hitendra.ecommerce.service.AddressService;
+import com.hitendra.ecommerce.utils.AuthUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +16,18 @@ import java.util.List;
 public class AddressController {
 
     private final AddressService addressService;
+    private final AuthUtil authUtil;
 
-    public AddressController(AddressService addressService) {
+    public AddressController(AddressService addressService, AuthUtil authUtil) {
         this.addressService = addressService;
+        this.authUtil = authUtil;
     }
 
-    @PostMapping("addresses")
+    @PostMapping("/addresses")
     public ResponseEntity<AddressDTO> createAddress(@Valid @RequestBody AddressDTO addressDTO) {
+        User user = authUtil.loggedInUser();
         return new ResponseEntity<>(
-                addressService.createAddress(addressDTO),
+                addressService.createAddress(addressDTO, user),
                 HttpStatus.CREATED
         );
     }

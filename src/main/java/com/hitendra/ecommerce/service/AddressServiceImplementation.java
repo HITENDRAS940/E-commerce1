@@ -29,8 +29,7 @@ public class AddressServiceImplementation implements AddressService {
     }
 
     @Override
-    public AddressDTO createAddress(AddressDTO addressDTO) {
-        User user = authUtil.loggedInUser();
+    public AddressDTO createAddress(AddressDTO addressDTO, User user) {
 
         Address address = modelMapper.map(addressDTO, Address.class);
         List<Address> addressList = user.getAddresses();
