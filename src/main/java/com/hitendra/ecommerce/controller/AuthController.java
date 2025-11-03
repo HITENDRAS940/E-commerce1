@@ -67,16 +67,18 @@ public class AuthController {
 
         UserDetailsImplementation userDetails = (UserDetailsImplementation) authentication.getPrincipal();
         ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
+        String jwtToken = jwtCookie.getValue();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        UserInfoResponse response = new UserInfoResponse(userDetails.getId() , userDetails.getUsername(), roles);
+        UserInfoResponse response = new UserInfoResponse(userDetails.getId() , userDetails.getUsername(), jwtToken, roles);
 
-        return ResponseEntity.ok().header(
-                    HttpHeaders.SET_COOKIE,
-                    jwtCookie.toString()
-                ).body(response);
+        return ResponseEntity.ok()
+                // Keep Authorization header for backward compatibility while adding cookie for automatic auth
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+                .body(response);
     }
 
     @PostMapping("/signup")
@@ -157,16 +159,12 @@ public class AuthController {
         if(authentication!=null)
             return authentication.getName();
         else
-            return "";
+            return "alooo";
     }
 
     @PostMapping("/signout")
     public ResponseEntity<?> signoutUser() {
-        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
-
-        return ResponseEntity.ok().header(
-                HttpHeaders.SET_COOKIE,
-                cookie.toString()
-        ).body(new MessageResponse("You have been signed out."));
+        SecurityContextHolder.clearContext();
+        return new ResponseEntity<>( "Signed out successfully", HttpStatus.OK);
     }
 }

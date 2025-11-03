@@ -16,7 +16,6 @@ public class AuthUtil {
         this.userRepository = userRepository;
     }
 
-
     public String loggedInEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository
